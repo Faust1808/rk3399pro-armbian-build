@@ -1,0 +1,2 @@
+neardi,lz110-linux,
+rockchip,rk3399pro
