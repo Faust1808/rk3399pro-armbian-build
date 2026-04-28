@@ -3,14 +3,22 @@ name: Build Armbian RK3399
 on:
   workflow_dispatch:
     inputs:
+      board:
+        description: Armbian board family for RK3399Pro-compatible boot flow
+        required: true
+        default: rockpro64
       release:
-        description: Ubuntu release
+        description: Ubuntu release for ROS 2 userspace
         required: true
         default: jammy
       branch:
-        description: Kernel branch
+        description: Kernel branch for this board (rockpro64 supports current/edge in upstream Armbian)
         required: true
-        default: legacy
+        default: current
+      build_minimal:
+        description: Build minimal image
+        required: true
+        default: "no"
       build_desktop:
         description: Build desktop image
         required: true
@@ -35,15 +43,22 @@ jobs:
         run: |
           mkdir -p armbian-build/userpatches
           cp -r userpatches/* armbian-build/userpatches/ || true
+          chmod +x armbian-build/userpatches/customize-image.sh || true
+          # Inject locally extracted RK3399Pro device tree into the image overlay
+          mkdir -p armbian-build/userpatches/overlay/usr/share/rk3399pro
+          if [ -f "rk3399pro-running.fdt" ]; then
+            chmod a+r rk3399pro-running.fdt || true
+            cp -f rk3399pro-running.fdt armbian-build/userpatches/overlay/usr/share/rk3399pro/rk3399pro-running.dtb
+          fi
 
       - name: Build image
         working-directory: armbian-build
         run: |
           ./compile.sh \
-            BOARD=rockpro64 \
+            BOARD=${{ github.event.inputs.board }} \
             BRANCH=${{ github.event.inputs.branch }} \
             RELEASE=${{ github.event.inputs.release }} \
-            BUILD_MINIMAL=yes \
+            BUILD_MINIMAL=${{ github.event.inputs.build_minimal }} \
             BUILD_DESKTOP=${{ github.event.inputs.build_desktop }} \
             KERNEL_CONFIGURE=no \
             COMPRESS_OUTPUTIMAGE=xz \
