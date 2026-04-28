@@ -67,6 +67,7 @@ jobs:
       - name: Build image
         working-directory: armbian-build
         run: |
+          # Keep host-side qemu/binfmt setup; avoids early bootstrap failures on GitHub runners.
           ./compile.sh \
             BOARD=${{ github.event.inputs.board }} \
             BRANCH=${{ github.event.inputs.branch }} \
