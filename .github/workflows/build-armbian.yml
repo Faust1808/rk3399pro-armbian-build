@@ -44,12 +44,15 @@ jobs:
           mkdir -p armbian-build/userpatches
           cp -r userpatches/* armbian-build/userpatches/ || true
           chmod +x armbian-build/userpatches/customize-image.sh || true
+          if [ ! -f "rk3399pro-running.fdt" ]; then
+            echo "Missing rk3399pro-running.fdt in repository root."
+            exit 1
+          fi
           # Inject locally extracted RK3399Pro device tree into the image overlay
           mkdir -p armbian-build/userpatches/overlay/usr/share/rk3399pro
-          if [ -f "rk3399pro-running.fdt" ]; then
-            chmod a+r rk3399pro-running.fdt || true
-            cp -f rk3399pro-running.fdt armbian-build/userpatches/overlay/usr/share/rk3399pro/rk3399pro-running.dtb
-          fi
+          chmod a+r rk3399pro-running.fdt || true
+          cp -f rk3399pro-running.fdt armbian-build/userpatches/overlay/usr/share/rk3399pro/rk3399pro-running.dtb
+          test -f armbian-build/userpatches/overlay/usr/share/rk3399pro/rk3399pro-running.dtb
 
       - name: Prepare qemu binfmt on runner
         run: |
