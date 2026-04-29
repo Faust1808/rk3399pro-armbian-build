@@ -12,9 +12,9 @@ on:
         required: true
         default: jammy
       branch:
-        description: Kernel branch for this board (legacy is safer for RK3399Pro DDR bring-up)
+        description: Kernel branch for this board (rockpro64 supports current/edge)
         required: true
-        default: legacy
+        default: current
       build_minimal:
         description: Build minimal image
         required: true
