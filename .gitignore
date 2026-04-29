@@ -31,3 +31,18 @@ maps/
 CH9344SER_LINUX/
 .qwen/
 nav2_navigation.rviz
+
+# 镜像与大体积构建产物（避免误提交到仓库）
+*.img
+*.img.xz
+*.img.gz
+*.raw
+*.qcow2
+*.vdi
+*.vmdk
+*.zst
+*.iso
+armbian-images*/
+armbian-debs*/
+armbian-logs*/
+output/
